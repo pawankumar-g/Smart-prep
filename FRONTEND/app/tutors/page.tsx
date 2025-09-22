@@ -224,9 +224,6 @@ export default function TutorsPage() {
 
               {/* Buttons */}
               <div className="flex gap-2 mt-3">
-                <Button variant="outline" className="flex-1">
-                  View Profile
-                </Button>
                 <Button className="flex-1 bg-blue-600 hover:bg-blue-700">
                   Book your session
                 </Button>

@@ -82,7 +82,7 @@ export default function Navbar() {
             ) : (
               // If logged in
               <>
-                <Button asChild variant="ghost" size="sm" className="text-blue-600 hover:bg-blue-50 rounded-full">
+                <Button asChild variant="ghost" size="sm" className="text-blue-600 hover:bg-blue-500 rounded-full">
                   <Link href="/profile">
                     <User className="h-4 w-4 mr-1" />
                     {user.firstName}
@@ -92,7 +92,7 @@ export default function Navbar() {
                   variant="ghost"
                   size="sm"
                   onClick={handleLogout}
-                  className="text-red-600 hover:bg-red-50 rounded-full"
+                  className="text-red-600 hover:bg-red-700 rounded-full"
                 >
                   <LogOut className="h-4 w-4 mr-1" /> Logout
                 </Button>
