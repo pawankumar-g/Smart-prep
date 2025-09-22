@@ -12,6 +12,10 @@ const regionRoutes = require('./routes/regionRoutes');
 const subjectRoutes = require("./routes/ResourceSubjectRoute");
 const tutorRoutes = require('./routes/tutors');
 const statsRoutes = require('./routes/statsRoutes');
+const resourceTypeRoutes = require("./routes/resourceTypeRoutes");
+
+
+
 
 const app = express();
 
@@ -39,6 +43,9 @@ app.use("/api/subjects", subjectRoutes);
 app.use('/api/tutors', tutorRoutes);
 
 app.use('/api/stats', statsRoutes);
+
+app.use("/api/resource-types", resourceTypeRoutes);
+
 
 
 
