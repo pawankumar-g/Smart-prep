@@ -1,3 +1,5 @@
+
+
 "use client"
 
 import { useState, useEffect } from "react"
@@ -22,7 +24,19 @@ import {
   Facebook,
   Twitter,
   Mail,
+  HelpCircle
 } from "lucide-react"
+
+// Map resource icon string to actual icon component
+const resourceIconMap: Record<string, React.ElementType> = {
+  filetext: FileText,
+  videotutorials: Video,
+  video: Video,
+  play: Play,
+  bookopen: BookOpen,
+  helpcircle: HelpCircle,
+  // add more as needed
+};
 
 // 🔹 Map string values (from DB) to actual icon components
 const iconMap: Record<string, React.ElementType> = {
@@ -35,6 +49,8 @@ const iconMap: Record<string, React.ElementType> = {
 export default function ResourcesPage() {
   const [selectedSubject, setSelectedSubject] = useState<string>("")
   const [subjects, setSubjects] = useState<any[]>([])
+
+   const [resourceTypes, setResourceTypes] = useState([]);
 
   useEffect(() => {
     // Fetch subjects dynamically from backend
@@ -49,32 +65,21 @@ export default function ResourcesPage() {
       .catch((err) => console.error("Error fetching subjects:", err))
   }, [])
 
-  const resourceTypes = [
-    {
-      type: "Practice Papers",
-      icon: FileText,
-      count: 150,
-      description: "Full-length practice papers with detailed marking schemes",
-    },
-    {
-      type: "Video Tutorials",
-      icon: Video,
-      count: 85,
-      description: "Step-by-step explanations from expert tutors",
-    },
-    {
-      type: "Interactive Quizzes",
-      icon: Play,
-      count: 300,
-      description: "Engaging quizzes with instant feedback",
-    },
-    {
-      type: "Study Guides",
-      icon: BookOpen,
-      count: 45,
-      description: "Comprehensive guides covering all topics",
-    },
-  ]
+
+    useEffect(() => {
+    const fetchResources = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/resource-types"); // your backend API
+        const data = await res.json();
+        setResourceTypes(data);
+      } catch (err) {
+        console.error("Error fetching resources:", err);
+      }
+    };
+    fetchResources();
+  }, []);
+
+
 
   const featuredResources = [
     {
@@ -86,6 +91,7 @@ export default function ResourcesPage() {
       rating: 4.9,
       downloads: 2500,
       preview: true,
+      file:"/files/11-Plus-Maths-preparation-guide.pdf"
     },
     {
       title: "English Comprehension Mastery",
@@ -96,6 +102,7 @@ export default function ResourcesPage() {
       rating: 4.8,
       downloads: 1800,
       preview: true,
+      file: "/files/11-Plus-English-preparation-guide.pdf"
     },
     {
       title: "Verbal Reasoning Patterns",
@@ -106,6 +113,7 @@ export default function ResourcesPage() {
       rating: 4.9,
       downloads: 1200,
       preview: true,
+      file: "/files/11-Plus-Verbal-Reasoning-preparation-guide.pdf"
     },
     {
       title: "Non-Verbal Logic Puzzles",
@@ -116,6 +124,7 @@ export default function ResourcesPage() {
       rating: 4.7,
       downloads: 950,
       preview: true,
+      file: "/files/11-Plus-NVR-preparation-guide.pdf"
     },
   ]
 
@@ -211,34 +220,57 @@ export default function ResourcesPage() {
       </section>
 
 
-      {/* Resource Types */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">What You'll Find</h2>
-            <p className="text-xl text-gray-600">
-              Diverse learning materials to suit every learning style and preference.
-            </p>
-          </div>
+      {/* Resource Types */}                                                                                                                                                                                                                                                                                                                                                                                                                                  
+    <section className="py-16 bg-white">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="text-center mb-12">
+      <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">What You'll Find</h2>
+      <p className="text-xl text-gray-600">
+        Diverse learning materials to suit every learning style and preference.
+      </p>
+    </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {resourceTypes.map((resource, index) => (
-              <Card key={index} className="text-center border-blue-100 hover:shadow-lg transition-all duration-300">
-                <CardHeader>
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                    <resource.icon className="h-6 w-6 text-blue-600" />
-                  </div>
-                  <CardTitle className="text-xl">{resource.type}</CardTitle>
-                  <div className="text-2xl font-bold text-blue-600">{resource.count}+</div>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="leading-relaxed">{resource.description}</CardDescription>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
+    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+      {resourceTypes.map((resource, index) => {
+        const IconComponent = resourceIconMap[resource.icon] || FileText;
+        return (
+          <Card key={index} className="text-center border-blue-100 hover:shadow-lg transition-all duration-300">
+            <CardHeader>
+              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <IconComponent className="h-6 w-6 text-blue-600" />
+              </div>
+              <CardTitle className="text-xl">{resource.type}</CardTitle>
+              <div className="text-2xl font-bold text-blue-600">{resource.count}+</div>
+            </CardHeader>
+            <CardContent>
+              <CardDescription className="leading-relaxed">{resource.description}</CardDescription>
+              {resource.button && resource.button.action && resource.button.label && (
+                <Button
+                  size="sm"
+                  className="mt-4 bg-blue-600 hover:bg-blue-700 w-full"
+                  onClick={() => window.location.href = resource.button.action}
+                >
+                  {resource.button.label}
+                </Button>
+              )}
+        
+              {!resource.button && resource.link && (
+                <Button
+                  size="sm"
+                  className="mt-4 bg-blue-600 hover:bg-blue-700 w-full"
+                  onClick={() => window.location.href = resource.link}
+                >
+                  Explore {resource.type}
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
 
       {/* Featured Resources */}
       <section className="py-16 bg-blue-50">
@@ -281,17 +313,14 @@ export default function ResourcesPage() {
                       {resource.preview && <Badge variant="outline">Preview Available</Badge>}
                     </div>
                     <div className="flex gap-2">
-                      <Button size="sm" className="flex-1 bg-blue-600 hover:bg-blue-700">
-                        <Download className="h-4 w-4 mr-2" />
-                        Download
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="border-blue-200 text-blue-600 hover:bg-blue-50 bg-transparent"
-                      >
-                        <Play className="h-4 w-4" />
-                      </Button>
+                   <a href={resource.file} download className="flex-1">
+  <Button size="sm" className="w-full bg-blue-600 hover:bg-blue-700">
+    <Download className="h-4 w-4 mr-2" />
+    Download
+  </Button>
+</a>
+
+
                     </div>
                   </div>
                 </CardContent>
@@ -344,9 +373,10 @@ export default function ResourcesPage() {
                         Explore {subject.name}
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
-                      <Button
+                       <Button
                         variant="outline"
-                        className="border-blue-200 text-blue-600 hover:bg-blue-50 bg-transparent"
+                        size="sm"
+                        className="border-blue-200 text-blue-600 hover:bg-blue-100 hover:text-blue-700"
                       >
                         Download Sample
                       </Button>
@@ -361,7 +391,7 @@ export default function ResourcesPage() {
                           <div>
                            
                             <img
-                              src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                              src="https://i.pinimg.com/736x/9f/13/e9/9f13e9adece130946067ac5fa974a8a2.jpg"
                               alt="Sample Question"
                               className="w-150 h-100 object-cover rounded-md"
                             />
@@ -428,7 +458,7 @@ export default function ResourcesPage() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <Award className="h-6 w-6 text-blue-400" />
-                <span className="text-lg font-bold">11 Plus DIY</span>
+                <span className="text-lg font-bold">11+ smartprep</span>
               </div>
               <p className="text-gray-400 leading-relaxed">Comprehensive study resources for 11+ exam success.</p>
             </div>
@@ -513,10 +543,12 @@ export default function ResourcesPage() {
           </div>
 
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 11 Plus DIY. All rights reserved.</p>
+            <p>&copy; 2024 11+ SmartPrep. All rights reserved.</p>
           </div>
         </div>
       </footer>
     </div>
   )
 }
+
+

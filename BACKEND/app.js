@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 
-// Import routes
+
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const schoolRoutes = require('./routes/schoolRoutes');
@@ -10,10 +10,16 @@ const regionRoutes = require('./routes/regionRoutes');
 const subjectRoutes = require('./routes/ResourceSubjectRoute');
 const tutorRoutes = require('./routes/tutors');
 const statsRoutes = require('./routes/statsRoutes');
+
+const resourceTypeRoutes = require("./routes/resourceTypeRoutes");
+
+
+
 const metricsRoutes = require('./routes/MetricsRoutes.js');
 const practiceTestRoutes = require("./routes/practiceTestRoutes");
 const recentActivityRoutes = require("./routes/recentActivityRoutes");
 const courseRoutes = require("./routes/courseRoutes");
+
 
 const app = express();
 
@@ -39,6 +45,9 @@ app.use('/api/metrics', metricsRoutes);
 app.use("/api/tests", practiceTestRoutes); // Use practiceTestRoutes for the main /api/tests endpoint
 app.use("/api/activities", recentActivityRoutes);
 app.use("/api/courses", courseRoutes);
+
+app.use("/api/resource-types", resourceTypeRoutes);
+
 
 
 // Root route
